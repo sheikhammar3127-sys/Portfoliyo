@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,6 +34,20 @@
       --mono: 'JetBrains Mono', monospace;
     }
 
+    body.light-mode {
+      --bg: #f0f2f8;
+      --glass: rgba(0, 0, 0, 0.04);
+      --glass-border: rgba(0, 0, 0, 0.10);
+      --glass-hover: rgba(0, 0, 0, 0.07);
+      --blue: #3b6fd9;
+      --purple: #8b3fd6;
+      --cyan: #0ea5c2;
+      --neon: #5b63d3;
+      --text: #1a1e2e;
+      --muted: #525d78;
+      --accent: #0d9373;
+    }
+
     html {
       scroll-behavior: smooth
     }
@@ -43,7 +56,8 @@
       background: var(--bg);
       color: var(--text);
       font-family: var(--font);
-      overflow-x: hidden
+      overflow-x: hidden;
+      transition: background .4s ease, color .4s ease
     }
 
     ::-webkit-scrollbar {
@@ -63,7 +77,12 @@
       position: fixed;
       inset: 0;
       z-index: 0;
-      pointer-events: none
+      pointer-events: none;
+      transition: opacity .4s ease
+    }
+
+    body.light-mode #three-canvas {
+      opacity: .85
     }
 
     nav {
@@ -76,7 +95,12 @@
       background: rgba(5, 8, 16, .75);
       backdrop-filter: blur(28px);
       -webkit-backdrop-filter: blur(28px);
-      border-bottom: 1px solid var(--glass-border)
+      border-bottom: 1px solid var(--glass-border);
+      transition: background .4s ease, border-color .4s ease
+    }
+
+    body.light-mode nav {
+      background: rgba(240, 242, 248, .8)
     }
 
     nav .inner {
@@ -166,7 +190,12 @@
       z-index: 99;
       padding: 1.5rem 2rem;
       flex-direction: column;
-      gap: 1rem
+      gap: 1rem;
+      transition: background .4s ease
+    }
+
+    body.light-mode .mobile-menu {
+      background: rgba(240, 242, 248, .97)
     }
 
     .mobile-menu a {
@@ -249,13 +278,21 @@
       -webkit-backdrop-filter: blur(20px);
       border-radius: 20px;
       box-shadow: 0 8px 40px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .07);
-      transition: transform .3s ease, box-shadow .3s ease, background .3s ease
+      transition: transform .3s ease, box-shadow .3s ease, background .3s ease, border-color .3s ease
     }
 
     .glass:hover {
       background: var(--glass-hover);
       box-shadow: 0 20px 60px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .1);
       transform: translateY(-4px)
+    }
+
+    body.light-mode .glass {
+      box-shadow: 0 8px 40px rgba(0, 0, 0, .08), inset 0 1px 0 rgba(255, 255, 255, .5)
+    }
+
+    body.light-mode .glass:hover {
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .12), inset 0 1px 0 rgba(255, 255, 255, .6)
     }
 
     #hero {
@@ -281,8 +318,9 @@
       font-family: var(--mono);
       font-size: .76rem;
       color: var(--accent);
-      background: rgba(100, 255, 218, .08);
-      border: 1px solid rgba(100, 255, 218, .2);
+      background: rgba(13, 147, 115, .08);
+      border: 1px solid rgba(13, 147, 115, .2);
+      transition: background .4s ease, border-color .4s ease, color .4s ease;
       padding: .32rem .9rem;
       border-radius: 50px;
       margin-bottom: 1.5rem;
@@ -321,7 +359,15 @@
       background: linear-gradient(135deg, #fff 0%, var(--neon) 40%, var(--purple) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 40px rgba(129, 140, 248, .3))
+      filter: drop-shadow(0 0 40px rgba(129, 140, 248, .3));
+      transition: filter .4s ease
+    }
+
+    body.light-mode .hero-name {
+      background: linear-gradient(135deg, var(--neon) 0%, var(--purple) 60%, var(--blue) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 30px rgba(91, 99, 211, .2))
     }
 
     .hero-title {
@@ -524,7 +570,8 @@
       border-radius: 50px;
       background: rgba(79, 143, 255, .1);
       border: 1px solid rgba(79, 143, 255, .25);
-      color: var(--blue)
+      color: var(--blue);
+      transition: background .4s ease, border-color .4s ease, color .4s ease
     }
 
     .tag.purple {
@@ -537,6 +584,21 @@
       background: rgba(34, 211, 238, .1);
       border-color: rgba(34, 211, 238, .25);
       color: var(--cyan)
+    }
+
+    body.light-mode .tag {
+      background: rgba(59, 111, 217, .1);
+      border-color: rgba(59, 111, 217, .25)
+    }
+
+    body.light-mode .tag.purple {
+      background: rgba(139, 63, 214, .1);
+      border-color: rgba(139, 63, 214, .25)
+    }
+
+    body.light-mode .tag.cyan {
+      background: rgba(14, 165, 194, .1);
+      border-color: rgba(14, 165, 194, .25)
     }
 
     .project-btns {
@@ -624,7 +686,12 @@
       border-radius: 50%;
       background: linear-gradient(135deg, var(--blue), var(--purple));
       box-shadow: 0 0 16px rgba(79, 143, 255, .6);
-      border: 2px solid var(--bg)
+      border: 2px solid var(--bg);
+      transition: border-color .4s ease
+    }
+
+    body.light-mode .tl-dot {
+      box-shadow: 0 0 12px rgba(59, 111, 217, .4)
     }
 
     .tl-card {
@@ -742,7 +809,7 @@
       font-family: var(--font);
       font-size: .88rem;
       outline: none;
-      transition: border-color .3s, box-shadow .3s, background .3s;
+      transition: border-color .3s, box-shadow .3s, background .3s, color .3s;
       resize: vertical
     }
 
@@ -760,6 +827,23 @@
     .form-group input::placeholder,
     .form-group textarea::placeholder {
       color: rgba(136, 146, 176, .45)
+    }
+
+    body.light-mode .form-group input,
+    body.light-mode .form-group textarea {
+      background: rgba(0, 0, 0, .03)
+    }
+
+    body.light-mode .form-group input:focus,
+    body.light-mode .form-group textarea:focus {
+      background: rgba(0, 0, 0, .05);
+      border-color: rgba(59, 111, 217, .5);
+      box-shadow: 0 0 0 3px rgba(59, 111, 217, .1)
+    }
+
+    body.light-mode .form-group input::placeholder,
+    body.light-mode .form-group textarea::placeholder {
+      color: rgba(82, 93, 120, .5)
     }
 
     footer {
@@ -889,7 +973,86 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    body.light-mode #toast {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12)
+    }
+
+    body.light-mode .social-btn:hover {
+      border-color: rgba(59, 111, 217, .35);
+      box-shadow: 0 10px 28px rgba(59, 111, 217, .12)
+    }
+
+    body.light-mode .skill-card:hover {
+      border-color: rgba(59, 111, 217, .3);
+      box-shadow: 0 8px 32px rgba(59, 111, 217, .1)
+    }
+
+    body.light-mode .btn-primary {
+      box-shadow: 0 4px 24px rgba(59, 111, 217, .25)
+    }
+
+    body.light-mode .btn-primary:hover {
+      box-shadow: 0 10px 36px rgba(59, 111, 217, .4)
+    }
+
+    body.light-mode .project-card::before {
+      background: linear-gradient(90deg, var(--blue), var(--purple), var(--cyan))
+    }
+
+    body.light-mode .skill-bar-track {
+      background: rgba(0, 0, 0, .06)
+    }
+
+    /* ── Theme Toggle ── */
+    .theme-toggle {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .3s ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font-size: 1.15rem;
+      line-height: 1;
+      margin-left: .6rem;
+      flex-shrink: 0
+    }
+
+    .theme-toggle:hover {
+      background: var(--glass-hover);
+      color: var(--text);
+      transform: translateY(-2px);
+      border-color: rgba(79, 143, 255, .3);
+      box-shadow: 0 6px 20px rgba(79, 143, 255, .15)
+    }
+
+    body.light-mode .theme-toggle:hover {
+      border-color: rgba(59, 111, 217, .3);
+      box-shadow: 0 6px 20px rgba(59, 111, 217, .12)
+    }
+
+    @media(max-width:768px) {
+      .theme-toggle {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+        margin-left: .4rem
+      }
+    }
   </style>
+  <script>
+    /* Apply saved theme BEFORE paint to prevent flash */
+    (function () {
+      if (localStorage.getItem('theme') === 'light') document.documentElement.style.setProperty('--_preload', '1');
+    })();
+  </script>
 </head>
 
 <body>
@@ -908,6 +1071,7 @@
         <li><a href="#experience">Experience</a></li>
         <li><a href="#contact" class="nav-cta">Contact</a></li>
       </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
       <button class="hamburger" id="hamburger" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
@@ -1003,7 +1167,7 @@
           <div class="tech-stack"><span class="tag">SwiftUI</span><span class="tag purple">Firebase</span><span
               class="tag cyan">MVVM</span></div>
           <div class="project-btns"><!-- <a href="https://github.com/sheikhammar3127-sys" target="_blank" class="btn btn-outline btn-sm">⌥
-              View Code</a> --><a href="#" class="btn btn-primary btn-sm">👁 Preview</a></div>
+              View Code</a> <a href="#" class="btn btn-primary btn-sm">👁 Preview</a> --></div>
         </div>
         <div class="project-card">
           <div class="project-icon">🧾</div>
@@ -1231,7 +1395,7 @@
             <textarea placeholder="Hey Ammar, I'd love to collaborate..." id="cMsg" name="message"></textarea>
           </div>
 
-          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">
+          <button type="button" onclick="sendMsg()" class="btn btn-primary" style="width:100%;justify-content:center">
             Send Message 🚀
           </button>
 
@@ -1373,13 +1537,82 @@
         pts.rotation.y = t * .012;
         pts.rotation.x = t * .006;
 
-        // Pulsing lights
-        pl1.intensity = 2.0 + Math.sin(t * .9) * .5;
-        pl2.intensity = 1.8 + Math.sin(t * .7 + 1) * .5;
-        pl3.intensity = 1.6 + Math.sin(t * 1.1 + 2) * .4;
+        // Pulsing lights (use dynamic base intensities)
+        pl1.intensity = (pl1._baseIntensity || 2.0) + Math.sin(t * .9) * .5;
+        pl2.intensity = (pl2._baseIntensity || 1.8) + Math.sin(t * .7 + 1) * .5;
+        pl3.intensity = (pl3._baseIntensity || 1.6) + Math.sin(t * 1.1 + 2) * .4;
 
         renderer.render(scene, camera);
       })();
+
+      // Expose references for theme switching
+      window._three = { objs, pm, pts, pl1, pl2, pl3, scene };
+
+      // Theme-aware color sets
+      const darkColors = {
+        objColors: [0x4f8fff, 0xa855f7, 0x22d3ee, 0x818cf8, 0x4f8fff, 0xa855f7, 0x22d3ee, 0x4f8fff, 0x818cf8, 0xa855f7, 0x22d3ee],
+        solidOpacity: .06,
+        wireOpacity: .18,
+        particleColor: 0x818cf8,
+        particleOpacity: .5,
+        ambientIntensity: .4,
+        pl1: { color: 0x4f8fff, base: 2.0 },
+        pl2: { color: 0xa855f7, base: 1.8 },
+        pl3: { color: 0x22d3ee, base: 1.6 }
+      };
+      const lightColors = {
+        objColors: [0x2557a8, 0x6b21a8, 0x0e7490, 0x4338ca, 0x2557a8, 0x6b21a8, 0x0e7490, 0x2557a8, 0x4338ca, 0x6b21a8, 0x0e7490],
+        solidOpacity: .18,
+        wireOpacity: .38,
+        particleColor: 0x4338ca,
+        particleOpacity: .55,
+        ambientIntensity: .25,
+        pl1: { color: 0x2557a8, base: 1.6 },
+        pl2: { color: 0x6b21a8, base: 1.4 },
+        pl3: { color: 0x0e7490, base: 1.2 }
+      };
+
+      window._threeUpdateTheme = function (isLight) {
+        const c = isLight ? lightColors : darkColors;
+
+        // Update object materials
+        objs.forEach((o, i) => {
+          const colorHex = c.objColors[i] || c.objColors[0];
+          o.m.children.forEach(mesh => {
+            mesh.material.color.setHex(colorHex);
+            if (mesh.material.wireframe) {
+              mesh.material.opacity = c.wireOpacity;
+            } else {
+              mesh.material.opacity = c.solidOpacity;
+            }
+          });
+        });
+
+        // Update particles
+        pm.color.setHex(c.particleColor);
+        pm.opacity = c.particleOpacity;
+
+        // Update lights
+        scene.children.forEach(child => {
+          if (child.isAmbientLight) child.intensity = c.ambientIntensity;
+        });
+        pl1.color.setHex(c.pl1.color);
+        pl2.color.setHex(c.pl2.color);
+        pl3.color.setHex(c.pl3.color);
+        pl1._baseIntensity = c.pl1.base;
+        pl2._baseIntensity = c.pl2.base;
+        pl3._baseIntensity = c.pl3.base;
+      };
+
+      // Store base intensities for pulsing
+      pl1._baseIntensity = darkColors.pl1.base;
+      pl2._baseIntensity = darkColors.pl2.base;
+      pl3._baseIntensity = darkColors.pl3.base;
+
+      // Apply on load if light mode is already active
+      if (document.body.classList.contains('light-mode')) {
+        window._threeUpdateTheme(true);
+      }
 
       window.addEventListener('resize', () => {
         const W = window.innerWidth, H = window.innerHeight;
@@ -1465,38 +1698,87 @@
     //   });
     // }
     // ✅ FIXED JS (no redirect, proper toast + loading)
-    const contactForm = document.querySelector('.contact-form');
-    const toast = document.getElementById('toast');
+    async function sendMsg() {
+      const contactForm = document.querySelector('.contact-form');
+      const toast = document.getElementById('toast');
 
-    if (contactForm && toast) {
-      contactForm.addEventListener('submit', async function (e) {
-        e.preventDefault();
+      if (!contactForm) return;
 
-        const btn = contactForm.querySelector('button[type="submit"]');
-        const originalBtnText = btn.innerHTML;
+      const name = document.getElementById("cName").value.trim();
+      const email = document.getElementById("cEmail").value.trim();
+      const message = document.getElementById("cMsg").value.trim();
 
-        btn.innerHTML = 'Sending... ⏳';
-        btn.disabled = true;
+      // Validation
+      if (!name || name.length < 2) {
+        alert("Please enter your name (min 2 characters).");
+        return;
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email || !emailRegex.test(email)) {
+        alert("Please enter a valid email address.");
+        return;
+      }
+      if (!message || message.length < 10) {
+        alert("Please enter a message (min 10 characters).");
+        return;
+      }
 
-        try {
-          await emailjs.send("service_7e5gpko", "template_6kbpern", {
-            name: document.getElementById("cName").value,
-            email: document.getElementById("cEmail").value,
-            message: document.getElementById("cMsg").value
-          });
+      const btn = contactForm.querySelector('button');
+      const originalBtnText = btn.innerHTML;
 
-          this.reset();
+      btn.innerHTML = 'Sending... ⏳';
+      btn.disabled = true;
+
+      try {
+        await emailjs.send("service_7e5gpko", "template_6kbpern", {
+          name: name,
+          email: email,
+          message: message
+        });
+
+        contactForm.reset();
+        if (toast) {
           toast.classList.add('show');
           setTimeout(() => toast.classList.remove('show'), 3000);
-
-        } catch (error) {
-          alert('❌ Failed to send. Try again.');
         }
-
+      } catch (error) {
+        alert('❌ Failed to send. Try again.');
+      } finally {
         btn.innerHTML = originalBtnText;
         btn.disabled = false;
-      });
+      }
     }
+    /* ══════════════════════════════════════
+       THEME TOGGLE
+    ══════════════════════════════════════ */
+    (function () {
+      const toggle = document.getElementById('themeToggle');
+      const saved = localStorage.getItem('theme');
+
+      function applyTheme(theme) {
+        if (theme === 'light') {
+          document.body.classList.add('light-mode');
+          toggle.textContent = '☀️';
+        } else {
+          document.body.classList.remove('light-mode');
+          toggle.textContent = '🌙';
+        }
+        // Update Three.js colors instantly
+        if (window._threeUpdateTheme) {
+          window._threeUpdateTheme(theme === 'light');
+        }
+      }
+
+      // Apply saved preference on load
+      if (saved) applyTheme(saved);
+
+      toggle.addEventListener('click', () => {
+        const isLight = document.body.classList.contains('light-mode');
+        const next = isLight ? 'dark' : 'light';
+        localStorage.setItem('theme', next);
+        applyTheme(next);
+      });
+    })();
   </script>
 
 
