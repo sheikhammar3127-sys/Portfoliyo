@@ -1,5 +1,618 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ammar — Junior iOS Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#050810;--glass:rgba(255,255,255,0.04);--glass-border:rgba(255,255,255,0.09);
+  --glass-hover:rgba(255,255,255,0.08);--blue:#4f8fff;--purple:#a855f7;--cyan:#22d3ee;
+  --neon:#818cf8;--text:#e8ecf7;--muted:#8892b0;--accent:#64ffda;
+  --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);overflow-x:hidden}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--blue),var(--purple));border-radius:10px}
+
+#three-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 0;
+  background:rgba(5,8,16,.75);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border-bottom:1px solid var(--glass-border)}
+nav .inner{display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:0 auto;padding:0 2rem}
+.nav-logo{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,var(--blue),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.5px}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.88rem;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff!important;
+  padding:.4rem 1.1rem;border-radius:50px;font-size:.82rem!important}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.hamburger span{display:block;width:24px;height:2px;background:var(--text);border-radius:4px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{display:none;position:fixed;top:65px;left:0;right:0;
+  background:rgba(5,8,16,.97);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--glass-border);z-index:99;padding:1.5rem 2rem;flex-direction:column;gap:1rem}
+.mobile-menu a{color:var(--muted);text-decoration:none;font-size:1rem;font-weight:500;
+  padding:.5rem 0;border-bottom:1px solid var(--glass-border);transition:color .2s}
+.mobile-menu a:hover{color:var(--text)}
+.mobile-menu.open{display:flex}
+
+section{padding:6rem 0;position:relative;z-index:1}
+.container{max-width:1100px;margin:0 auto;padding:0 2rem;position:relative;z-index:1}
+.section-label{font-size:.72rem;font-family:var(--mono);color:var(--accent);letter-spacing:3px;
+  text-transform:uppercase;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.section-label::before{content:'';display:inline-block;width:28px;height:1px;background:var(--accent)}
+.section-title{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-1px;margin-bottom:1rem}
+.gradient-text{background:linear-gradient(135deg,var(--blue) 0%,var(--purple) 60%,var(--cyan) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.section-sub{color:var(--muted);max-width:540px;font-size:1rem;line-height:1.7;margin-bottom:3rem}
+
+.glass{background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:20px;
+  box-shadow:0 8px 40px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.07);
+  transition:transform .3s ease,box-shadow .3s ease,background .3s ease}
+.glass:hover{background:var(--glass-hover);
+  box-shadow:0 20px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);
+  transform:translateY(-4px)}
+
+#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:7rem 0 5rem}
+.hero-card{padding:3.5rem 3rem;max-width:720px;width:100%;margin:0 auto}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);
+  font-size:.76rem;color:var(--accent);background:rgba(100,255,218,.08);
+  border:1px solid rgba(100,255,218,.2);padding:.32rem .9rem;border-radius:50px;margin-bottom:1.5rem;letter-spacing:1px}
+.hero-badge span{display:inline-block;width:7px;height:7px;background:var(--accent);
+  border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.3)}}
+.hero-name{font-size:clamp(3.5rem,9vw,6.5rem);font-weight:800;letter-spacing:-4px;line-height:1;
+  margin-bottom:.4rem;background:linear-gradient(135deg,#fff 0%,var(--neon) 40%,var(--purple) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 40px rgba(129,140,248,.3))}
+.hero-title{font-size:clamp(1rem,2.5vw,1.25rem);font-weight:400;color:var(--muted);margin-bottom:1.1rem}
+.hero-tagline{font-size:clamp(1.05rem,2.5vw,1.35rem);font-weight:600;color:var(--text);margin-bottom:1rem}
+.hero-intro{color:var(--muted);font-size:.97rem;max-width:480px;margin:0 auto 2rem;line-height:1.7}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.8rem;border-radius:50px;
+  font-family:var(--font);font-size:.9rem;font-weight:600;cursor:pointer;
+  text-decoration:none;border:none;transition:all .3s ease;letter-spacing:.3px}
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;
+  box-shadow:0 4px 24px rgba(79,143,255,.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(79,143,255,.55)}
+.btn-outline{background:var(--glass);border:1px solid var(--glass-border);color:var(--text);backdrop-filter:blur(10px)}
+.btn-outline:hover{background:var(--glass-hover);transform:translateY(-2px)}
+.btn-sm{padding:.48rem 1.15rem;font-size:.78rem}
+
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start}
+.about-text p{color:var(--muted);line-height:1.8;margin-bottom:1rem;font-size:1rem}
+.about-text p span{color:var(--text);font-weight:500}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:.85rem;margin-top:1.5rem}
+.skill-card{padding:1rem .8rem;text-align:center;border-radius:16px;background:var(--glass);
+  border:1px solid var(--glass-border);backdrop-filter:blur(12px);
+  transition:all .3s ease;cursor:default;position:relative;overflow:hidden}
+.skill-card:hover{background:var(--glass-hover);transform:translateY(-5px) scale(1.04);
+  border-color:rgba(79,143,255,.35);box-shadow:0 8px 32px rgba(79,143,255,.18)}
+.skill-icon{font-size:1.7rem;margin-bottom:.4rem;display:block}
+.skill-name{font-size:.75rem;font-weight:600;color:var(--text);letter-spacing:.5px}
+
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1.5rem}
+.project-card{padding:1.8rem;border-radius:20px;background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(20px);transition:all .35s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;gap:.8rem;position:relative;overflow:hidden;
+  transform-style:preserve-3d;perspective:800px}
+.project-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--blue),var(--purple),var(--cyan));opacity:0;transition:opacity .3s}
+.project-card:hover::before{opacity:1}
+.project-icon{font-size:2rem}
+.project-name{font-size:1.08rem;font-weight:700}
+.project-desc{color:var(--muted);font-size:.88rem;line-height:1.65;flex:1}
+.tech-stack{display:flex;flex-wrap:wrap;gap:.4rem}
+.tag{font-size:.7rem;font-family:var(--mono);font-weight:500;padding:.22rem .62rem;border-radius:50px;
+  background:rgba(79,143,255,.1);border:1px solid rgba(79,143,255,.25);color:var(--blue)}
+.tag.purple{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.25);color:var(--purple)}
+.tag.cyan{background:rgba(34,211,238,.1);border-color:rgba(34,211,238,.25);color:var(--cyan)}
+.project-btns{display:flex;gap:.6rem;margin-top:.3rem}
+
+.skills-bars{display:flex;flex-direction:column;gap:1.5rem}
+.skill-bar-header{display:flex;justify-content:space-between;margin-bottom:.5rem;font-size:.9rem;font-weight:600}
+.skill-bar-track{height:9px;background:rgba(255,255,255,.06);border-radius:50px;overflow:hidden}
+.skill-bar-fill{height:100%;border-radius:50px;
+  background:linear-gradient(90deg,var(--blue),var(--purple));
+  width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+.skill-bar-fill.cyan{background:linear-gradient(90deg,var(--cyan),var(--neon))}
+.skill-bar-fill.purple{background:linear-gradient(90deg,var(--purple),#f472b6)}
+.pct{color:var(--muted);font-family:var(--mono);font-size:.78rem}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+
+.timeline{position:relative;padding-left:2.5rem}
+.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(to bottom,var(--blue),var(--purple),transparent);border-radius:2px}
+.tl-item{position:relative;margin-bottom:2.5rem}
+.tl-dot{position:absolute;left:-3rem;top:.35rem;width:14px;height:14px;border-radius:50%;
+  background:linear-gradient(135deg,var(--blue),var(--purple));
+  box-shadow:0 0 16px rgba(79,143,255,.6);border:2px solid var(--bg)}
+.tl-card{padding:1.5rem;border-radius:16px;background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(12px);transition:all .3s}
+.tl-card:hover{background:var(--glass-hover);transform:translateX(5px)}
+.tl-role{font-size:1rem;font-weight:700;margin-bottom:.25rem}
+.tl-period{font-size:.76rem;font-family:var(--mono);color:var(--accent);margin-bottom:.7rem}
+.tl-desc{color:var(--muted);font-size:.88rem;line-height:1.65}
+.tl-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.8rem}
+
+.contact-wrap{display:grid;grid-template-columns:1fr 1.4fr;gap:2.5rem;align-items:start}
+.contact-info h3{font-size:1.08rem;font-weight:700;margin-bottom:1.2rem}
+.contact-link{display:flex;align-items:center;gap:.9rem;padding:1rem 1.2rem;border-radius:14px;
+  margin-bottom:.7rem;background:var(--glass);border:1px solid var(--glass-border);
+  text-decoration:none;color:var(--text);font-size:.88rem;transition:all .3s}
+.contact-link:hover{background:var(--glass-hover);transform:translateX(5px)}
+.contact-link .ci{font-size:1.25rem}
+.contact-link .cl{color:var(--muted);font-size:.78rem;display:block}
+.contact-form{padding:2rem;border-radius:20px;background:var(--glass);border:1px solid var(--glass-border);backdrop-filter:blur(20px)}
+.form-group{margin-bottom:1.2rem}
+.form-group label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin-bottom:.4rem;letter-spacing:.5px}
+.form-group input,.form-group textarea{width:100%;background:rgba(255,255,255,.04);
+  border:1px solid var(--glass-border);border-radius:12px;padding:.72rem 1rem;
+  color:var(--text);font-family:var(--font);font-size:.88rem;outline:none;
+  transition:border-color .3s,box-shadow .3s,background .3s;resize:vertical}
+.form-group input:focus,.form-group textarea:focus{border-color:rgba(79,143,255,.5);
+  box-shadow:0 0 0 3px rgba(79,143,255,.1);background:rgba(255,255,255,.07)}
+.form-group textarea{min-height:120px}
+.form-group input::placeholder,.form-group textarea::placeholder{color:rgba(136,146,176,.45)}
+
+footer{border-top:1px solid var(--glass-border);padding:2.5rem 0;text-align:center;position:relative;z-index:1}
+.footer-socials{display:flex;gap:1rem;justify-content:center;margin-bottom:1.2rem}
+.social-btn{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;
+  justify-content:center;background:var(--glass);border:1px solid var(--glass-border);
+  color:var(--muted);text-decoration:none;transition:all .3s;backdrop-filter:blur(10px)}
+.social-btn:hover{background:var(--glass-hover);color:var(--text);transform:translateY(-4px);
+  border-color:rgba(79,143,255,.35);box-shadow:0 10px 28px rgba(79,143,255,.2)}
+.footer-copy{color:var(--muted);font-size:.84rem}
+.footer-copy span{color:var(--text)}
+
+.fade-up{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:768px){
+  .nav-links{display:none}.hamburger{display:flex}
+  .about-grid,.two-col,.contact-wrap{grid-template-columns:1fr}
+  .hero-card{padding:2.5rem 1.5rem}
+  .projects-grid{grid-template-columns:1fr!important}
+  section{padding:4rem 0}
+  .skills-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:480px){
+  .skills-grid{grid-template-columns:repeat(2,1fr)}
+  .hero-btns{flex-direction:column;align-items:center}
+}
+</style>
+</head>
+<body>
+<canvas id="three-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="inner">
+    <div class="nav-logo">Ammar.</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#contact" class="nav-cta">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="closeMobile()">About</a>
+  <a href="#projects" onclick="closeMobile()">Projects</a>
+  <a href="#skills" onclick="closeMobile()">Skills</a>
+  <a href="#experience" onclick="closeMobile()">Experience</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="glass hero-card fade-up visible">
+      <div class="hero-badge"><span></span> Available for opportunities</div>
+      <h1 class="hero-name">Ammar</h1>
+      <p class="hero-title">Junior iOS Developer</p>
+      <p class="hero-tagline">I build smooth &amp; scalable iOS apps using SwiftUI</p>
+      <p class="hero-intro">Passionate about crafting clean, performant mobile experiences — from pixel-perfect UI to robust backend integration with Firebase and REST APIs.</p>
+      <div class="hero-btns">
+        <a href="#projects" class="btn btn-primary">🚀 View Projects</a>
+        <a href="#contact" class="btn btn-outline">✉️ Contact Me</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="section-label">01 — About</div>
+    <h2 class="section-title"><span class="gradient-text">About Me</span></h2>
+    <div class="about-grid">
+      <div class="about-text fade-up">
+        <p>Hey! I'm <span>Ammar</span>, a Junior iOS Developer who loves turning ideas into elegant mobile experiences. My focus is on <span>clean UI design, performance</span>, and writing maintainable code.</p>
+        <p>I work primarily with <span>Swift &amp; SwiftUI</span>, building apps that feel as good as they look — smooth animations, intuitive flows, and pixel-perfect layouts.</p>
+        <p>I've integrated apps with <span>Firebase</span> for real-time data, authentication, and cloud storage, and have experience consuming <span>REST APIs</span> to build dynamic, data-driven applications.</p>
+        <p>Always learning, always building — and always looking for the next challenge in the Apple ecosystem.</p>
+      </div>
+      <div class="fade-up">
+        <div class="section-label" style="margin-top:0">Core Skills</div>
+        <div class="skills-grid">
+          <div class="skill-card"><span class="skill-icon">🍎</span><div class="skill-name">Swift</div></div>
+          <div class="skill-card"><span class="skill-icon">🖼️</span><div class="skill-name">SwiftUI</div></div>
+          <div class="skill-card"><span class="skill-icon">📱</span><div class="skill-name">UIKit</div></div>
+          <div class="skill-card"><span class="skill-icon">🔥</span><div class="skill-name">Firebase</div></div>
+          <div class="skill-card"><span class="skill-icon">🌐</span><div class="skill-name">REST APIs</div></div>
+          <div class="skill-card"><span class="skill-icon">🏗️</span><div class="skill-name">MVVM</div></div>
+          <div class="skill-card"><span class="skill-icon">⚡</span><div class="skill-name">Xcode</div></div>
+          <div class="skill-card"><span class="skill-icon">🐙</span><div class="skill-name">Git</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <div class="section-label">02 — Projects</div>
+    <h2 class="section-title"><span class="gradient-text">Featured Projects</span></h2>
+    <p class="section-sub">Apps designed and built with clean architecture, smooth UX, and real-world functionality.</p>
+    <div class="projects-grid fade-up">
+      <div class="project-card">
+        <div class="project-icon">👥</div>
+        <div class="project-name">Employee Management App</div>
+        <div class="project-desc">Comprehensive HR app to manage employees, roles, and departments. Real-time sync with Firebase, authentication, and a clean SwiftUI dashboard.</div>
+        <div class="tech-stack"><span class="tag">SwiftUI</span><span class="tag purple">Firebase</span><span class="tag cyan">MVVM</span></div>
+        <div class="project-btns"><a href="https://github.com/sheikhammar3127-sys" target="_blank" class="btn btn-outline btn-sm">⌥ View Code</a><a href="#" class="btn btn-primary btn-sm">👁 Preview</a></div>
+      </div>
+      <div class="project-card">
+        <div class="project-icon">🧾</div>
+        <div class="project-name">Billing &amp; Invoice App</div>
+        <div class="project-desc">Generate professional invoices, track payments, and manage billing history. Core Data for offline persistence and full PDF export functionality.</div>
+        <div class="tech-stack"><span class="tag">SwiftUI</span><span class="tag cyan">Core Data</span><span class="tag purple">PDF Kit</span></div>
+        <div class="project-btns"><a href="https://github.com/sheikhammar3127-sys" target="_blank" class="btn btn-outline btn-sm">⌥ View Code</a></div>
+      </div>
+      <div class="project-card">
+        <div class="project-icon">📅</div>
+        <div class="project-name">Attendance Tracker</div>
+        <div class="project-desc">Track attendance with calendar views, stats, and reports. Supports geolocation check-ins and real-time updates via Firebase Firestore.</div>
+        <div class="tech-stack"><span class="tag">SwiftUI</span><span class="tag purple">Firebase</span><span class="tag cyan">MapKit</span></div>
+        <div class="project-btns"><a href="https://github.com/sheikhammar3127-sys" target="_blank" class="btn btn-outline btn-sm">⌥ View Code</a></div>
+      </div>
+      <div class="project-card">
+        <div class="project-icon">📊</div>
+        <div class="project-name">API Dashboard App</div>
+        <div class="project-desc">Dynamic data dashboard consuming public REST APIs — live charts, lists, and stats. Showcases async/await networking and reactive SwiftUI.</div>
+        <div class="tech-stack"><span class="tag">SwiftUI</span><span class="tag cyan">REST API</span><span class="tag">Charts</span></div>
+        <div class="project-btns"><a href="https://github.com/sheikhammar3127-sys" target="_blank" class="btn btn-outline btn-sm">⌥ View Code</a></div>
+      </div>
+      <div class="project-card">
+        <div class="project-icon">🛒</div>
+        <div class="project-name">E-Commerce Store App</div>
+        <div class="project-desc">Minimal shopping app with product listings, cart, and order management. Firebase Auth for accounts and smooth SwiftUI transitions throughout.</div>
+        <div class="tech-stack"><span class="tag">SwiftUI</span><span class="tag purple">Firebase Auth</span><span class="tag cyan">REST API</span></div>
+        <div class="project-btns"><a href="https://github.com/sheikhammar3127-sys" target="_blank" class="btn btn-outline btn-sm">⌥ View Code</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <div class="section-label">03 — Skills</div>
+    <h2 class="section-title"><span class="gradient-text">Technical Skills</span></h2>
+    <p class="section-sub">Proficiency across the iOS development stack — from UI frameworks to backend integration.</p>
+    <div class="two-col fade-up">
+      <div class="skills-bars">
+        <div class="skill-bar-item"><div class="skill-bar-header"><span>SwiftUI</span><span class="pct">88%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="88"></div></div></div>
+        <div class="skill-bar-item"><div class="skill-bar-header"><span>Swift</span><span class="pct">85%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="85"></div></div></div>
+        <div class="skill-bar-item"><div class="skill-bar-header"><span>UIKit</span><span class="pct">75%</span></div><div class="skill-bar-track"><div class="skill-bar-fill cyan" data-width="75"></div></div></div>
+        <div class="skill-bar-item"><div class="skill-bar-header"><span>Firebase</span><span class="pct">80%</span></div><div class="skill-bar-track"><div class="skill-bar-fill purple" data-width="80"></div></div></div>
+        <div class="skill-bar-item"><div class="skill-bar-header"><span>REST API Integration</span><span class="pct">82%</span></div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="82"></div></div></div>
+        <div class="skill-bar-item"><div class="skill-bar-header"><span>MVVM Architecture</span><span class="pct">78%</span></div><div class="skill-bar-track"><div class="skill-bar-fill cyan" data-width="78"></div></div></div>
+      </div>
+      <div>
+        <div class="skills-grid" style="grid-template-columns:repeat(2,1fr)">
+          <div class="skill-card" style="text-align:left;padding:1.2rem"><span class="skill-icon">⚡</span><div class="skill-name">Xcode &amp; Instruments</div></div>
+          <div class="skill-card" style="text-align:left;padding:1.2rem"><span class="skill-icon">🔄</span><div class="skill-name">Async / Await</div></div>
+          <div class="skill-card" style="text-align:left;padding:1.2rem"><span class="skill-icon">🗄️</span><div class="skill-name">Core Data</div></div>
+          <div class="skill-card" style="text-align:left;padding:1.2rem"><span class="skill-icon">🐙</span><div class="skill-name">Git &amp; GitHub</div></div>
+          <div class="skill-card" style="text-align:left;padding:1.2rem"><span class="skill-icon">🧪</span><div class="skill-name">Unit Testing</div></div>
+          <div class="skill-card" style="text-align:left;padding:1.2rem"><span class="skill-icon">🎨</span><div class="skill-name">Figma / Design</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="container">
+    <div class="section-label">04 — Journey</div>
+    <h2 class="section-title"><span class="gradient-text">Learning &amp; Experience</span></h2>
+    <p class="section-sub">My development journey — from first app to production-ready iOS projects.</p>
+    <div class="timeline fade-up">
+      <div class="tl-item"><div class="tl-dot"></div>
+        <div class="tl-card"><div class="tl-role">Junior iOS Developer</div><div class="tl-period">2024 — Present</div>
+          <div class="tl-desc">Building production-ready iOS apps with SwiftUI and UIKit. Integrating Firebase for auth and real-time data. Consuming REST APIs to create dynamic, data-driven experiences.</div>
+          <div class="tl-tags"><span class="tag">SwiftUI</span><span class="tag purple">Firebase</span><span class="tag cyan">REST APIs</span></div>
+        </div>
+      </div>
+      <div class="tl-item"><div class="tl-dot"></div>
+        <div class="tl-card"><div class="tl-role">iOS Development Learner</div><div class="tl-period">2023 — 2024</div>
+          <div class="tl-desc">Completed intensive Swift and iOS coursework. Built multiple practice apps including weather, to-do, and API clients. Mastered MVVM architecture and SwiftUI declarative syntax.</div>
+          <div class="tl-tags"><span class="tag">Swift</span><span class="tag cyan">UIKit</span><span class="tag purple">MVVM</span></div>
+        </div>
+      </div>
+      <div class="tl-item"><div class="tl-dot"></div>
+        <div class="tl-card"><div class="tl-role">App Store Submission</div><div class="tl-period">2024</div>
+          <div class="tl-desc">Successfully prepared and submitted iOS apps following Apple's guidelines. Learned code signing, provisioning profiles, TestFlight beta testing, and the full review process.</div>
+          <div class="tl-tags"><span class="tag">App Store Connect</span><span class="tag cyan">TestFlight</span></div>
+        </div>
+      </div>
+      <div class="tl-item"><div class="tl-dot"></div>
+        <div class="tl-card"><div class="tl-role">Open Source Contributor</div><div class="tl-period">2024 — Present</div>
+          <div class="tl-desc">Sharing iOS projects on GitHub. Contributing reusable components, networking layers, and SwiftUI design patterns to the developer community.</div>
+          <div class="tl-tags"><span class="tag purple">GitHub</span><span class="tag">Open Source</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="section-label">05 — Contact</div>
+    <h2 class="section-title"><span class="gradient-text">Get In Touch</span></h2>
+    <p class="section-sub">Have a project in mind or want to chat? I'm always open to new opportunities and collaborations.</p>
+    <div class="contact-wrap fade-up">
+      <div class="contact-info">
+        <h3>Let's Connect</h3>
+        <a href="mailto:ammar@example.com" class="contact-link"><span class="ci">📧</span><div><strong>Email</strong><span class="cl">ammar@example.com</span></div></a>
+        <a href="https://github.com/sheikhammar3127-sys" target="_blank" class="contact-link"><span class="ci">🐙</span><div><strong>GitHub</strong><span class="cl">github.com/sheikhammar3127-sys</span></div></a>
+        <a href="https://linkedin.com/in/ammar" target="_blank" class="contact-link"><span class="ci">💼</span><div><strong>LinkedIn</strong><span class="cl">linkedin.com/in/ammar</span></div></a>
+        <a href="#" class="contact-link"><span class="ci">📱</span><div><strong>Twitter / X</strong><span class="cl">@ammar_dev</span></div></a>
+      </div>
+      <div class="contact-form">
+        <div class="form-group"><label>YOUR NAME</label><input type="text" placeholder="John Appleseed" id="cName"/></div>
+        <div class="form-group"><label>EMAIL ADDRESS</label><input type="email" placeholder="john@apple.com" id="cEmail"/></div>
+        <div class="form-group"><label>MESSAGE</label><textarea placeholder="Hey Ammar, I'd love to collaborate..." id="cMsg"></textarea></div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="sendMsg()">Send Message 🚀</button>
+        <p id="formStatus" style="text-align:center;margin-top:.8rem;font-size:.84rem;color:var(--accent);display:none">✅ Message sent! I'll get back to you soon.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-socials">
+      <a href="https://github.com/sheikhammar3127-sys" target="_blank" rel="noopener noreferrer" class="social-btn" title="GitHub">
+        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.42 7.88 10.95.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.54-3.87-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.2 1.77 1.2 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.17 1.18a11.05 11.05 0 015.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.58.23 2.75.11 3.04.73.8 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.66.41.36.78 1.07.78 2.15v3.19c0 .31.21.67.8.55C20.21 21.41 23.5 17.1 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+      </a>
+      <a href="https://linkedin.com/in/ammar" target="_blank" rel="noopener noreferrer" class="social-btn" title="LinkedIn">
+        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+      </a>
+      <a href="mailto:ammar@example.com" class="social-btn" title="Email">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+      </a>
+      <a href="https://twitter.com/ammar_dev" target="_blank" rel="noopener noreferrer" class="social-btn" title="X / Twitter">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+    </div>
+    <p class="footer-copy">© 2026 <span>Ammar</span>. All rights reserved. Built with ❤️ and Swift.</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ══════════════════════════════════════
+   THREE.JS 3D INTERACTIVE BACKGROUND
+══════════════════════════════════════ */
+(function(){
+  const canvas = document.getElementById('three-canvas');
+  const W = window.innerWidth, H = window.innerHeight;
+  const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(W,H);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, W/H, 0.1, 200);
+  camera.position.z = 32;
+
+  let mouseX = 0, mouseY = 0;
+  document.addEventListener('mousemove', e => {
+    mouseX = (e.clientX/window.innerWidth - .5) * 2;
+    mouseY = -(e.clientY/window.innerHeight - .5) * 2;
+  });
+
+  // Wireframe + solid combo per object
+  function makeObj(geo, color, wx, wy, wz, sx) {
+    const solidMat = new THREE.MeshPhongMaterial({color, transparent:true, opacity:.06, side:THREE.DoubleSide});
+    const wireMat  = new THREE.MeshPhongMaterial({color, wireframe:true, transparent:true, opacity:.18});
+    const g = new THREE.Group();
+    g.add(new THREE.Mesh(geo, solidMat), new THREE.Mesh(geo, wireMat));
+    g.position.set(wx,wy,wz);
+    g.scale.setScalar(sx||1);
+    scene.add(g);
+    return g;
+  }
+
+  const objs = [
+    { m: makeObj(new THREE.IcosahedronGeometry(6,1),   0x4f8fff, -20,  9, -22),  spd:.003, ax: new THREE.Vector3(.4,.7,.2).normalize(), ph:0,    fa:2   },
+    { m: makeObj(new THREE.IcosahedronGeometry(4.5,1), 0xa855f7,  19, -5, -19),  spd:.004, ax: new THREE.Vector3(.6,.3,.8).normalize(), ph:1.2,  fa:1.5 },
+    { m: makeObj(new THREE.OctahedronGeometry(3.5,0),  0x22d3ee, -11,-11, -16),  spd:.005, ax: new THREE.Vector3(.2,.9,.4).normalize(), ph:2.4,  fa:1   },
+    { m: makeObj(new THREE.TorusGeometry(5,.7,8,20),   0x818cf8,  15, 13, -24),  spd:.002, ax: new THREE.Vector3(.8,.1,.6).normalize(), ph:0.5,  fa:1.8 },
+    { m: makeObj(new THREE.TetrahedronGeometry(3,0),   0x4f8fff,   0,-15,-11),   spd:.006, ax: new THREE.Vector3(.3,.5,.9).normalize(), ph:3.0,  fa:1.2 },
+    { m: makeObj(new THREE.OctahedronGeometry(2.2,0),  0xa855f7, -21,  1,-13),   spd:.004, ax: new THREE.Vector3(.7,.2,.5).normalize(), ph:1.8,  fa:.8  },
+    { m: makeObj(new THREE.IcosahedronGeometry(2.8,1), 0x22d3ee,  21,  5,-15),   spd:.003, ax: new THREE.Vector3(.1,.8,.3).normalize(), ph:4.2,  fa:1.4 },
+    { m: makeObj(new THREE.TorusGeometry(2.8,.5,6,14), 0x4f8fff,  -5, 15,-17),   spd:.005, ax: new THREE.Vector3(.9,.4,.1).normalize(), ph:2.1,  fa:.9  },
+    { m: makeObj(new THREE.TetrahedronGeometry(1.8,0), 0x818cf8,   9,-19, -9),   spd:.007, ax: new THREE.Vector3(.5,.6,.7).normalize(), ph:5.0,  fa:1.1 },
+    { m: makeObj(new THREE.OctahedronGeometry(1.6,0),  0xa855f7, -25, -3,-19),   spd:.004, ax: new THREE.Vector3(.3,.8,.2).normalize(), ph:0.9,  fa:.7  },
+    { m: makeObj(new THREE.IcosahedronGeometry(2,1),   0x22d3ee,  23,-13,-21),   spd:.003, ax: new THREE.Vector3(.6,.4,.9).normalize(), ph:3.7,  fa:1.3 },
+  ];
+
+  // Particle cloud
+  const N = 320;
+  const pg = new THREE.BufferGeometry();
+  const pp = new Float32Array(N*3);
+  for(let i=0;i<N;i++){
+    pp[i*3]  =(Math.random()-.5)*90;
+    pp[i*3+1]=(Math.random()-.5)*70;
+    pp[i*3+2]=(Math.random()-.5)*45-8;
+  }
+  pg.setAttribute('position', new THREE.BufferAttribute(pp,3));
+  const pm = new THREE.PointsMaterial({color:0x818cf8, size:.1, transparent:true, opacity:.5});
+  const pts = new THREE.Points(pg, pm);
+  scene.add(pts);
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0xffffff,.4));
+  const pl1 = new THREE.PointLight(0x4f8fff,2.2,70); pl1.position.set(18,16,8); scene.add(pl1);
+  const pl2 = new THREE.PointLight(0xa855f7,2,70);   pl2.position.set(-18,-12,6); scene.add(pl2);
+  const pl3 = new THREE.PointLight(0x22d3ee,1.8,60); pl3.position.set(0,0,18); scene.add(pl3);
+
+  let scrollY = 0;
+  window.addEventListener('scroll',()=>{ scrollY = window.scrollY; });
+
+  const clock = new THREE.Clock();
+  (function animate(){
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+
+    objs.forEach(o => {
+      o.m.rotateOnAxis(o.ax, o.spd);
+      // gentle vertical float
+      o.m.position.y += Math.sin(t + o.ph) * o.fa * .003;
+    });
+
+    // Smooth parallax follow
+    camera.position.x += (mouseX * 4 - camera.position.x) * .025;
+    camera.position.y += (mouseY * 2.5 - camera.position.y) * .025;
+    camera.position.z = 32 - scrollY * .007;
+    scene.rotation.y = scrollY * .00025;
+
+    pts.rotation.y = t * .012;
+    pts.rotation.x = t * .006;
+
+    // Pulsing lights
+    pl1.intensity = 2.0 + Math.sin(t*.9) * .5;
+    pl2.intensity = 1.8 + Math.sin(t*.7+1) * .5;
+    pl3.intensity = 1.6 + Math.sin(t*1.1+2) * .4;
+
+    renderer.render(scene, camera);
+  })();
+
+  window.addEventListener('resize',()=>{
+    const W=window.innerWidth, H=window.innerHeight;
+    camera.aspect=W/H; camera.updateProjectionMatrix();
+    renderer.setSize(W,H);
+  });
+})();
+
+/* ══════════════════════════════════════
+   UI INTERACTIONS
+══════════════════════════════════════ */
+const ham = document.getElementById('hamburger');
+const mob = document.getElementById('mobileMenu');
+ham.addEventListener('click', () => { ham.classList.toggle('open'); mob.classList.toggle('open'); });
+function closeMobile(){ ham.classList.remove('open'); mob.classList.remove('open'); }
+
+// Fade-up on scroll
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting) return;
+    e.target.classList.add('visible');
+    e.target.querySelectorAll('.skill-bar-fill').forEach(b=>{ b.style.width=b.dataset.width+'%'; });
+  });
+},{threshold:.12});
+document.querySelectorAll('.fade-up').forEach(el=>io.observe(el));
+
+// Staggered card reveal
+const io2 = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting) return;
+    e.target.style.opacity='1';
+    e.target.style.transform='translateY(0)';
+    e.target.querySelectorAll('.skill-bar-fill').forEach(b=>{ b.style.width=b.dataset.width+'%'; });
+  });
+},{threshold:.1});
+document.querySelectorAll('.tl-card,.skill-card,.project-card').forEach((el,i)=>{
+  el.style.opacity='0';
+  el.style.transform='translateY(20px)';
+  el.style.transition=`opacity .6s ease ${i*.07}s, transform .6s ease ${i*.07}s`;
+  io2.observe(el);
+});
+
+// 3D mouse-tilt on project cards
+document.querySelectorAll('.project-card').forEach(card=>{
+  card.addEventListener('mousemove', e=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    const y=(e.clientY-r.top)/r.height-.5;
+    card.style.transform=`translateY(-8px) rotateX(${-y*12}deg) rotateY(${x*12}deg)`;
+    card.style.boxShadow=`${-x*24}px ${-y*24}px 50px rgba(79,143,255,.14), 0 20px 60px rgba(0,0,0,.5)`;
+  });
+  card.addEventListener('mouseleave',()=>{ card.style.transform=''; card.style.boxShadow=''; });
+});
+
+function sendMsg(){
+  const name = document.getElementById('cName').value.trim();
+  const email = document.getElementById('cEmail').value.trim();
+  const msg = document.getElementById('cMsg').value.trim();
+  const status = document.getElementById('formStatus');
+  
+  if(!name || !email || !msg){
+    alert('Please fill all fields.');
+    return;
+  }
+  
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if(!emailRegex.test(email)){
+    alert('Please enter a valid email address.');
+    return;
+  }
+
+  // Simulate API call
+  status.textContent = "⏳ Sending...";
+  status.style.display = 'block';
+  status.style.color = 'var(--muted)';
+
+  setTimeout(() => {
+    status.textContent = "✅ Message sent! I'll get back to you soon.";
+    status.style.color = 'var(--accent)';
+    document.getElementById('cName').value='';
+    document.getElementById('cEmail').value='';
+    document.getElementById('cMsg').value='';
+    
+    setTimeout(() => { status.style.display = 'none'; }, 5000);
+  }, 1500);
+}
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
   <meta charset="UTF-8" />
